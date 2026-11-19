@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Cesta Certa: compare mercados pela sua lista, planeje o cardápio e desperdice menos.">
+<title>Cesta Certa — compre melhor, alimente-se melhor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--verde:#1b5a3a;--verde-esc:#0f3d27;--banana:#f7d117;--laranja:#f28c28;--azul:#3f6fb5;--tomate:#c8412b;--bg:#fffdf6;--ink:#17231b;--muted:#4a574e;--err:#a3281c;--focus:#0057d9;--tela:'Bowlby One','Arial Black',sans-serif}
+html{font-size:100%}html.acess{font-size:125%}
+html.acess{--muted:#000;--verde:#0f3d27;--laranja:#e07a14}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.55 "Public Sans",system-ui,sans-serif}
+h1,h2,h3,.brand,.total,.pos{font-family:var(--tela);font-weight:400}
+h1{font-size:clamp(2.1rem,8vw,3.8rem);line-height:1.05;margin:1.25rem 0 1rem;max-width:18ch}
+h1:focus{outline:none}
+h2{font-size:1.35rem;line-height:1.15;margin:1.5rem 0 .5rem}
+h3{font-size:1.15rem;line-height:1.2;margin:0 0 .25rem}
+:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:.5rem;top:-4rem;background:var(--ink);color:#fff;padding:.6rem 1rem;z-index:99}
+.skip:focus{top:.5rem}
+.toldo{height:.9rem;border-bottom:3px solid var(--ink);background:repeating-linear-gradient(90deg,var(--verde) 0 2.5rem,var(--banana) 2.5rem 5rem,var(--azul) 5rem 7.5rem,var(--tomate) 7.5rem 10rem)}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 1.5rem;padding:.8rem clamp(1rem,4vw,2.5rem);border-bottom:3px solid var(--ink)}
+.top button{font-family:inherit;cursor:pointer}
+.brand{background:none;border:0;color:var(--verde);font-size:1.6rem;padding:0}
+.top nav{display:flex;gap:.25rem}
+.top nav button{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .85rem;border:2px solid transparent;border-radius:2rem;background:none;color:var(--ink);font:600 1rem "Public Sans",sans-serif;min-height:2.75rem}
+.top nav button:hover{border-color:var(--ink)}
+.top nav [aria-current=page]{background:var(--banana);border-color:var(--ink)}
+.acess-btn{border:3px solid var(--ink);border-radius:2rem;background:#fff;color:var(--ink);padding:.35rem 1rem;font:600 .9rem "Public Sans",sans-serif;min-height:2.75rem}
+.acess-btn[aria-pressed=true]{background:var(--ink);color:#fff}
+main{max-width:48rem;margin:0 auto;padding:1rem clamp(1rem,4vw,2rem) 3rem}
+.lead{font-size:1.25rem;max-width:36rem}
+.note{color:var(--muted);font-size:.95rem;margin-top:2rem}
+.btn{background:var(--verde);color:#fff;border:3px solid var(--ink);border-radius:.6rem;padding:.7rem 1.4rem;font:700 1.05rem "Public Sans",sans-serif;min-height:3rem;box-shadow:3px 3px 0 var(--ink);cursor:pointer}
+.btn:hover{background:var(--verde-esc)}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.btn+.btn{margin-left:.5rem}
+.link{background:none;border:0;color:var(--verde);font:600 1rem "Public Sans",sans-serif;text-decoration:underline;text-underline-offset:3px;padding:.5rem 0;cursor:pointer}
+.pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1.25rem;margin:2rem 0;list-style:none;padding:0}
+.pilares li{border:3px solid var(--ink);border-radius:.9rem;padding:1.1rem;box-shadow:5px 5px 0 var(--ink)}
+.pilares h2{margin-top:0;font-size:1.5rem}
+.pilares .link{padding:0;color:inherit}
+.c1{background:var(--verde);color:#fff}.c2{background:var(--banana)}.c3{background:var(--laranja)}
+.field,fieldset{margin:1.25rem 0;border:0;padding:0}
+legend,label{font-weight:700}
+legend{margin-bottom:.4rem;padding:0}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.35rem}
+input:not([type]),input[type=number],select{min-height:3rem;border:3px solid var(--ink);border-radius:.6rem;padding:.4rem .75rem;font:inherit;background:#fff;color:var(--ink)}
+input:not([type]),select{width:100%}
+.row input:not([type]){flex:1 1 12rem;width:auto}
+.row input[type=number]{width:5.5rem}
+#form-perfil input[type=number],#form-perfil select{width:100%}
+#form-desp select{flex:1 1 12rem;width:auto}
+input[aria-invalid=true]{border-color:var(--err)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0 1.5rem}
+.opt{display:inline-flex;align-items:center;gap:.5rem;margin:.25rem .4rem .25rem 0;padding:.35rem 1rem;min-height:2.75rem;border:3px solid var(--ink);border-radius:2rem;background:#fff;font-weight:600}
+.opt:has(input:checked){background:var(--banana)}
+.opt input{width:1.3rem;height:1.3rem;accent-color:var(--verde)}
+.erro{color:var(--err);font-weight:700;min-height:1.5rem;margin:.4rem 0}
+.ok{color:var(--verde);font-weight:700;margin-top:1rem}
+.urg{color:var(--err);font-weight:700;margin:.2rem 0}
+.ico{display:grid;place-items:center;flex:none;width:3rem;height:3rem;border:2px solid var(--ink);border-radius:.6rem;background:var(--banana);font-size:1.6rem}
+#itens{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.75rem}
+#itens li{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;border:3px solid var(--ink);border-radius:.75rem;padding:.7rem .9rem;background:#fff}
+.nm{flex:1 1 9rem;font-weight:700}
+.qty{display:inline-flex;align-items:center;border:3px solid var(--ink);border-radius:.6rem;overflow:hidden}
+.qty button{width:2.9rem;min-height:2.9rem;border:0;background:var(--banana);color:var(--ink);font:700 1.4rem "Public Sans",sans-serif;cursor:pointer}
+.qty input{width:3.2rem;min-height:2.9rem;border:0;border-radius:0;padding:0;text-align:center;-moz-appearance:textfield}
+.qty input::-webkit-inner-spin-button,.qty input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.chip-check{display:inline-flex;align-items:center;gap:.5rem;min-height:2.75rem;font-weight:400}
+.chip-check input{width:1.4rem;height:1.4rem;accent-color:var(--verde)}
+.rm{background:none;border:0;color:var(--err);font:600 .95rem "Public Sans",sans-serif;text-decoration:underline;min-height:2.75rem;cursor:pointer}
+#estimativa{border-left:8px solid var(--verde);background:#e9f2e6;padding:.6rem 1rem;margin:1rem 0}
+#estimativa:empty{display:none}
+#ranking{list-style:none;padding:0;margin:1.5rem 0;display:grid;gap:1.25rem}
+#ranking li{display:grid;grid-template-columns:auto 1fr;gap:.3rem 1rem;align-items:start;border:3px solid var(--ink);border-radius:.9rem;padding:1.1rem;background:#fff;box-shadow:5px 5px 0 var(--ink)}
+#ranking li:first-child{background:#fff6c9}
+.pos{grid-row:span 5;display:grid;place-items:center;width:3rem;height:3rem;border:3px solid var(--ink);border-radius:50%;background:var(--laranja);font-size:1.4rem}
+#ranking h2{margin:0}
+.sel{display:inline-block;margin-left:.6rem;padding:.1rem .7rem;border-radius:2rem;background:var(--verde);color:#fff;font:700 .9rem "Public Sans",sans-serif;vertical-align:middle}
+.meta{margin:0;color:var(--muted)}
+.total{display:inline-block;margin:.2rem 0;padding:.15rem .6rem;border:3px solid var(--ink);border-radius:.4rem;background:var(--banana);font-size:2rem;line-height:1.15}
+.total .meta{font:400 .9rem "Public Sans",sans-serif;color:var(--ink)}
+.bar{grid-column:2;display:block;height:.7rem;border:2px solid var(--ink);border-radius:1rem;background:#e7e1cf;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--verde)}
+#ranking .btn{justify-self:start;margin-top:.5rem}
+.totais{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:1rem;margin:1.5rem 0}
+.totais div{border:3px solid var(--ink);border-radius:.75rem;padding:.7rem .9rem;background:#fff;box-shadow:4px 4px 0 var(--ink)}
+.totais div:last-child{background:var(--banana)}
+.totais dt{font-size:.95rem;color:var(--muted)}.totais div:last-child dt{color:var(--ink)}
+.totais dd{margin:0;font:400 1.4rem/1.2 var(--tela)}
+.scroll{overflow-x:auto;border:3px solid var(--ink);border-radius:.75rem;background:#fff}
+table{width:100%;border-collapse:collapse}
+caption{text-align:left;font-weight:700;padding:.6rem .6rem .4rem}
+thead th{background:var(--verde);color:#fff}
+th,td{text-align:left;padding:.55rem .7rem;border-bottom:2px solid #ddd6c1}
+td.falta{color:var(--err);font-weight:700}
+details{margin:1.5rem 0;border:3px solid var(--ink);border-radius:.75rem;padding:.6rem 1rem;background:#fff}
+summary{cursor:pointer;font-weight:700}
+.blocos{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.9rem}
+.blocos>li{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;border:3px solid var(--ink);border-radius:.75rem;padding:.9rem 1rem;background:#fff}
+.blocos>li>div{flex:1 1 14rem}
+#cardapio .ico{width:auto;padding:0 .6rem;font-size:1.3rem;letter-spacing:.1em}
+#ajustes>li{border-left:12px solid var(--laranja)}
+.blocos button{border:3px solid var(--ink);border-radius:.6rem;background:#fff;color:var(--ink);padding:.35rem .9rem;font:700 .95rem "Public Sans",sans-serif;min-height:2.75rem;cursor:pointer}
+#desp-lista .urg,#desp-lista .ok{display:inline-block;margin:.2rem 0;padding:.1rem .7rem;border-radius:2rem}
+#desp-lista .urg{background:#fde1da;color:#8a1f10}
+#desp-lista .ok{background:#dcefdc;color:#14452f}
+footer{margin-top:2rem;padding:1.25rem clamp(1rem,4vw,2.5rem);background:var(--verde-esc);color:#fff;font-size:.9rem}
+footer p{margin:0}
+@media (max-width:760px){
+  .top nav{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;background:var(--bg);border-top:3px solid var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+  .top nav button{flex-direction:column;gap:0;border-radius:0;border:0;padding:.4rem .1rem;font-size:.78rem;min-height:3.6rem}
+  .top nav button:hover{border:0}
+  .top nav [aria-current=page]{box-shadow:inset 0 4px 0 var(--ink)}
+  .ni{font-size:1.4rem;line-height:1.2}
+  main{padding-bottom:6rem}footer{padding-bottom:5.5rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.ico{background:#fff;font-size:0}
+.ico svg{width:2rem;height:2rem}
+#cardapio .ico{display:flex;gap:.1rem;padding:0 .5rem}
+#cardapio .ico svg{width:1.7rem;height:1.7rem}
+.svg.sm{width:1.4rem;height:1.4rem;vertical-align:-.3em;margin-right:.3rem}
+.ni svg{width:1.5rem;height:1.5rem;display:block}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<div class="toldo" aria-hidden="true"></div>
+<header class="top">
+  <button class="brand" type="button" data-go="inicio">Cesta Certa</button>
+  <nav aria-label="Principal">
+    <button type="button" data-go="inicio"><span class="ni" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="M4 15L16 4l12 11v13H4z" fill="#f7d117"/><rect x="13" y="19" width="6" height="9" fill="#fff"/></svg></span><span>Início</span></button>
+    <button type="button" data-go="lista"><span class="ni" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"><rect x="6" y="4" width="20" height="25" rx="3" fill="#fff"/><path d="M11 12h10M11 18h10M11 24h6"/><rect x="11" y="2" width="10" height="5" fill="#f28c28"/></svg></span><span>Lista</span></button>
+    <button type="button" data-go="resultados"><span class="ni" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="M3 13h26l-3 15H6z" fill="#f28c28"/><path d="M9 13a7 7 0 0 1 14 0"/><path d="M12 18v6M16 18v6M20 18v6" stroke-width="2"/></svg></span><span>Mercados</span></button>
+    <button type="button" data-go="assistente"><span class="ni" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"><circle cx="16" cy="16" r="12" fill="#fff"/><circle cx="16" cy="16" r="6" fill="#f7d117"/></svg></span><span>Cardápio</span></button>
+    <button type="button" data-go="despensa"><span class="ni" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none"><rect x="8" y="7" width="16" height="21" rx="3" fill="#fff"/><rect x="10" y="3" width="12" height="4" fill="#3f6fb5"/><rect x="8" y="14" width="16" height="8" fill="#f7d117"/></svg></span><span>Despensa</span></button>
+  </nav>
+  <button type="button" id="acess" class="acess-btn" aria-pressed="false">Letra grande e alto contraste</button>
+</header>
+<p id="live" class="sr" role="status" aria-live="polite"></p>
+<main id="main">
+  <section id="inicio" data-screen aria-labelledby="t-inicio">
+    <h1 id="t-inicio" tabindex="-1">Compre melhor. Alimente-se melhor. Desperdice menos.</h1>
+    <p class="lead">O Cesta Certa mostra onde comprar sua lista pagando menos no total, sugere o que cozinhar com o que você tem e avisa o que consumir primeiro.</p>
+    <ul class="pilares">
+      <li class="c1"><h2>Compre melhor</h2><p>Compare mercados somando preço, tempo e custo de ir até lá.</p><button class="link" type="button" data-go="lista">Montar minha lista</button></li>
+      <li class="c2"><h2>Planeje melhor</h2><p>Receba um cardápio feito com a sua lista e a sua despensa.</p><button class="link" type="button" data-go="assistente">Ver cardápio</button></li>
+      <li class="c3"><h2>Desperdice menos</h2><p>Saiba onde guardar cada alimento e o que consumir primeiro.</p><button class="link" type="button" data-go="despensa">Ver despensa</button></li>
+    </ul>
+    <h2>Seu perfil</h2>
+    <form id="form-perfil" novalidate>
+      <div class="grid2">
+        <div class="field"><label for="pessoas">Quantas pessoas comem na sua casa?</label><input id="pessoas" type="number" min="1" max="12" aria-describedby="erro-perfil"></div>
+        <div class="field"><label for="orc">Orçamento semanal para comida (R$)</label><input id="orc" type="number" min="1" aria-describedby="erro-perfil"></div>
+        <div class="field"><label for="bairro">Onde você está?</label><select id="bairro"></select></div>
+      </div>
+      <fieldset>
+        <legend>Como você vai ao mercado?</legend>
+        <label class="opt"><input type="radio" name="modo" value="pe"> A pé</label>
+        <label class="opt"><input type="radio" name="modo" value="onibus"> De ônibus</label>
+        <label class="opt"><input type="radio" name="modo" value="carro"> De carro</label>
+      </fieldset>
+      <p id="erro-perfil" class="erro" role="alert"></p>
+      <div class="row"><button class="btn" type="submit">Salvar e montar lista</button><button class="link" type="button" id="exemplo">Preencher com exemplo</button></div>
+    </form>
+    <p class="note">Protótipo acadêmico: preços, distâncias e sugestões são simulados.</p>
+  </section>
+
+  <section id="lista" data-screen hidden aria-labelledby="t-lista">
+    <h1 id="t-lista" tabindex="-1">Minha lista de compras</h1>
+    <p><span id="contexto"></span> <button class="link" type="button" data-go="inicio">Alterar</button></p>
+    <form id="form-lista" novalidate>
+      <div class="field">
+        <label for="item">Adicionar item</label>
+        <div class="row"><input id="item" list="catalogo" autocomplete="off" aria-describedby="erro-item"><label class="sr" for="qtd">Quantidade</label><input id="qtd" type="number" min="1" max="20" value="1"><button class="btn" type="submit">Adicionar</button></div>
+        <datalist id="catalogo"></datalist>
+        <p id="erro-item" class="erro" role="alert"></p>
+      </div>
+    </form>
+    <ul id="itens" aria-label="Itens da lista"></ul>
+    <p id="vazio">Sua lista está vazia. Adicione ao menos um item.</p>
+    <p id="estimativa" role="status"></p>
+    <p id="erro-lista" class="erro" role="alert"></p>
+    <button class="btn" type="button" id="comparar">Comparar mercados</button>
+  </section>
+
+  <section id="resultados" data-screen hidden aria-labelledby="t-res">
+    <h1 id="t-res" tabindex="-1">Mercados para a sua lista</h1>
+    <p id="resumo"></p>
+    <fieldset>
+      <legend>O que pesa mais para você?</legend>
+      <label class="opt"><input type="radio" name="prio" value="equilibrio" checked> Equilíbrio</label>
+      <label class="opt"><input type="radio" name="prio" value="preco"> Menor custo total</label>
+      <label class="opt"><input type="radio" name="prio" value="tempo"> Menor tempo</label>
+      <label class="opt"><input type="radio" name="prio" value="disp"> Mais itens da lista</label>
+    </fieldset>
+    <label class="opt"><input type="checkbox" id="so-completos"> Mostrar só mercados com todos os itens</label>
+    <ol id="ranking"></ol>
+  </section>
+
+  <section id="detalhe" data-screen hidden aria-labelledby="t-det">
+    <button class="link" type="button" data-go="resultados">Voltar aos mercados</button>
+    <h1 id="t-det" tabindex="-1"></h1>
+    <p id="det-sub"></p>
+    <dl id="det-totais" class="totais"></dl>
+    <div class="scroll"><table>
+      <caption>Itens da sua lista neste mercado</caption>
+      <thead><tr><th scope="col">Item</th><th scope="col">Qtd.</th><th scope="col">Preço</th><th scope="col">Subtotal</th></tr></thead>
+      <tbody id="det-itens"></tbody>
+    </table></div>
+    <details><summary>Como calculamos</summary>
+      <p>Total = preço dos itens + ida e volta. A pé, o deslocamento não custa nada; de ônibus, duas passagens de R$ 5,00 e 10 minutos de espera por trecho; de carro, gasolina a R$ 6,20 por litro e 10 km por litro. Item que o mercado não tem entra como estimativa: preço médio dos outros mercados mais 15%, porque você precisaria comprá-lo em outro lugar. Em "Equilíbrio", cada hora no caminho conta como R$ 12,00.</p>
+    </details>
+    <button class="btn" type="button" id="escolher">Vou a este mercado</button>
+    <p id="confirma" class="ok" role="status"></p>
+    <button class="btn" type="button" id="registrar" hidden>Registrar compra na despensa</button>
+    <button class="btn" type="button" id="ver-despensa" data-go="despensa" hidden>Ver minha despensa</button>
+  </section>
+
+  <section id="assistente" data-screen hidden aria-labelledby="t-ass">
+    <h1 id="t-ass" tabindex="-1">Cardápio da semana</h1>
+    <p id="assist-vazio" hidden>Ainda não há ingredientes para sugerir pratos. <button class="link" type="button" data-go="lista">Monte sua lista</button> ou <button class="link" type="button" data-go="despensa">registre o que já tem em casa</button>.</p>
+    <p class="note">Sugestões geradas por regras, a partir da sua lista, da sua despensa e do que vence primeiro. Em uma versão real, uma API de IA faria essa etapa.</p>
+    <ol id="cardapio" class="blocos"></ol>
+    <h2>Ajustes para gastar menos</h2>
+    <ul id="ajustes" class="blocos"></ul>
+  </section>
+
+  <section id="despensa" data-screen hidden aria-labelledby="t-desp">
+    <h1 id="t-desp" tabindex="-1">Minha despensa</h1>
+    <p id="desp-resumo" role="status"></p>
+    <form id="form-desp" class="row">
+      <label class="sr" for="desp-item">Item que chegou em casa hoje</label>
+      <select id="desp-item"></select>
+      <button class="btn" type="submit">Adicionar à despensa</button>
+    </form>
+    <p id="desp-vazio" hidden>Sua despensa está vazia. Adicione o que chegou em casa ou registre uma compra.</p>
+    <ul id="desp-lista" class="blocos"></ul>
+    <p class="note">A vida útil é uma estimativa após a compra e não substitui a validade impressa pelo fabricante.</p>
+  </section>
+</main>
+<footer><p>Cesta Certa, Global Solution FIAP, CitizenTech</p></footer>
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const R$ = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+const km1 = v => String(v).replace('.', ',');
+const ICONS = {
+  arroz: `<path d="M4 17h24a12 11 0 0 1-24 0z" fill="#3f6fb5"/><path d="M7 17a9 9 0 0 1 18 0z" fill="#fff"/><path d="M12 12l1 1M17 10l1 1M20 13l1 1" stroke-width="2"/>`,
+  feijao: `<path d="M8 9c5-5 17-2 18 7 1 8-8 12-14 8-5-3-8-10-4-15z" fill="#a3281c"/><path d="M12 14c2-2 6-1 7 2" stroke="#fff" stroke-width="2"/>`,
+  ovos: `<path d="M16 4c6 0 10 9 10 15a10 10 0 0 1-20 0C6 13 10 4 16 4z" fill="#fff"/><path d="M11 17c0-3 1-6 3-8" stroke-width="2"/>`,
+  leite: `<path d="M9 12l7-8 7 8v16H9z" fill="#fff"/><path d="M9 17h14v7H9z" fill="#3f6fb5"/>`,
+  banana: `<path d="M6 6c-1 14 8 21 21 16-1 3-5 6-10 6C8 28 2 18 6 6z" fill="#f7d117"/><path d="M6 6l2-3"/>`,
+  tomate: `<circle cx="16" cy="18" r="10" fill="#c8412b"/><path d="M9 11l7 4 7-4-3 6-4-2-4 2z" fill="#1b5a3a"/>`,
+  cebola: `<path d="M16 4c1 4 10 7 10 16a10 9 0 0 1-20 0c0-9 9-12 10-16z" fill="#f3c97a"/><path d="M16 9v18M11 13c-2 6-1 10 1 14M21 13c2 6 1 10-1 14" stroke-width="2"/>`,
+  batata: `<path d="M5 17c0-8 9-12 17-8 6 3 7 10 3 15s-12 5-17 1c-2-2-3-5-3-8z" fill="#c98f4f"/><circle cx="12" cy="16" r="1.3" fill="#17231b"/><circle cx="19" cy="14" r="1.3" fill="#17231b"/><circle cx="17" cy="21" r="1.3" fill="#17231b"/>`,
+  frango: `<circle cx="20" cy="12" r="8" fill="#c8793a"/><path d="M14 18L7 25" stroke-width="6"/><path d="M14 18L7 25" stroke="#fff" stroke-width="2.5"/><circle cx="5" cy="25" r="2.6" fill="#fff"/><circle cx="8" cy="28" r="2.6" fill="#fff"/>`,
+  pao: `<path d="M5 23L23 5c3-2 6 1 4 4L9 27c-3 2-6-1-4-4z" fill="#e2a24a"/><path d="M12 15l4 4M16 11l4 4" stroke-width="2"/>`,
+  oleo: `<path d="M13 3h6v5l3 4v16H10V12l3-4z" fill="#f7d117"/><rect x="10" y="16" width="12" height="7" fill="#fff"/>`,
+  cafe: `<path d="M5 12h18v8a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8z" fill="#f28c28"/><path d="M23 14h3a3 3 0 0 1 0 7h-4"/><path d="M11 3v5M16 3v5" stroke-width="2"/>`,
+  macarrao: `<path d="M4 17h24a12 11 0 0 1-24 0z" fill="#c8412b"/><path d="M7 17c2-7 4 2 6-4s4 4 6-2 4 4 6-1" stroke="#f7d117" stroke-width="4"/>`,
+  cenoura: `<g transform="rotate(35 16 16)"><path d="M10 9h12L16 30z" fill="#f28c28"/><path d="M16 9c-1-5-5-6-7-6 0 3 2 6 7 6zM16 9c1-5 5-6 7-6 0 3-2 6-7 6z" fill="#1b5a3a"/><path d="M13 15h4M14 20h3" stroke-width="2"/></g>`
+};
+const svg = (k, c = '') => `<svg class="svg ${c}" viewBox="0 0 32 32" aria-hidden="true" focusable="false" stroke="#17231b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="none">${ICONS[k]}</svg>`;
+
+/*CALC*/
+// Deslocamento é ida e volta. Carro: R$ 6,20/L ÷ 10 km/L = R$ 0,62/km, vezes 2.
+const MODOS = {
+  pe:     { nome: 'a pé',      kmh: 5,  espera: 0,  fixo: 0,  porKm: 0 },
+  onibus: { nome: 'de ônibus', kmh: 14, espera: 10, fixo: 10, porKm: 0 },
+  carro:  { nome: 'de carro',  kmh: 20, espera: 0,  fixo: 0,  porKm: 1.24 }
+};
+const VALOR_HORA = 12, FATOR_FALTA = 1.15;
+function mediaPreco(k, D) { const p = D.mercados.map(m => m.precos[k]).filter(Boolean); return p.reduce((a, c) => a + c, 0) / p.length; }
+function calcular(lista, bairro, modoId, D) {
+  const modo = MODOS[modoId];
+  return D.mercados.map(m => {
+    const km = m.km[bairro]; let cesta = 0, extra = 0; const linhas = [], falta = [];
+    lista.forEach(({ k, q }) => {
+      const p = m.precos[k];
+      if (p) { cesta += p * q; linhas.push({ k, q, p }); }
+      else { const est = mediaPreco(k, D) * FATOR_FALTA; extra += est * q; falta.push(k); linhas.push({ k, q, p: null, est }); }
+    });
+    const min = Math.round(2 * (km / modo.kmh * 60 + modo.espera));
+    const desloc = modo.fixo + modo.porKm * km, total = cesta + extra + desloc;
+    return { ...m, km, cesta, extra, falta, linhas, min, desloc, total, efetivo: total + min / 60 * VALOR_HORA, modo: modo.nome };
+  });
+}
+/*FIM*/
+
+let D, resultado = [], atual = null;
+let S = { perfil: { pessoas: 2, bairro: 0, modo: 'pe', orc: 150 }, lista: [], despensa: [] };
+try { const s = JSON.parse(localStorage.getItem('cestacerta')); if (s) S = { ...S, ...s, perfil: { ...S.perfil, ...s.perfil } }; } catch {}
+const salvar = () => { try { localStorage.setItem('cestacerta', JSON.stringify(S)); } catch {} };
+const isoLocal = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+const hoje = () => isoLocal(new Date());
+const dias = a => Math.round((new Date(hoje()) - new Date(a)) / 864e5);
+const nome = k => D.itens[k];
+const curto = k => nome(k).replace(/ (\d.*|\(.*)$/, '');
+const anuncia = t => { const l = $('#live'); l.textContent = ''; setTimeout(() => l.textContent = t, 50); };
+const plural = (n, a, b) => n === 1 ? a : b;
+
+/* ---------- Dados ---------- */
+Promise.resolve({
+ "bairros": ["Mooca", "Pinheiros", "Itaquera", "Santo Amaro"],
+ "itens": {"arroz":"Arroz 1 kg","feijao":"Feijão 1 kg","ovos":"Ovos (dúzia)","leite":"Leite 1 L","banana":"Banana 1 kg","tomate":"Tomate 1 kg","cebola":"Cebola 1 kg","batata":"Batata 1 kg","frango":"Frango 1 kg","pao":"Pão francês 1 kg","oleo":"Óleo de soja 900 ml","cafe":"Café 500 g","macarrao":"Macarrão 500 g","cenoura":"Cenoura 1 kg"},
+ "mercados": [
+  {"id":"sacolao","nome":"Sacolão da Praça","tipo":"Hortifruti","km":[0.9,5.8,10.2,11.5],"p":[6.2,8.4,11.0,5.2,4.9,6.5,4.2,5.0,null,null,null,null,5.1,3.9]},
+  {"id":"vilanova","nome":"Mercadão Vila Nova","tipo":"Hipermercado","km":[4.3,2.1,13.5,7.4],"p":[5.4,7.6,9.8,4.6,5.6,7.2,4.8,5.5,12.9,14.5,6.3,19.9,4.2,4.8]},
+  {"id":"irmaos","nome":"Super Dois Irmãos","tipo":"Supermercado","km":[2.2,0.8,8.9,4.0],"p":[6.0,8.2,11.5,5.4,5.9,7.9,5.2,5.9,14.2,15.9,7.2,21.5,4.9,5.4]},
+  {"id":"pedefeijao","nome":"Mercado Pé de Feijão","tipo":"Mercearia","km":[1.4,4.6,1.1,9.0],"p":[6.9,9.1,12.9,5.9,6.4,8.8,5.8,6.4,15.9,null,7.9,23.9,5.6,6.1]},
+  {"id":"atacado","nome":"Atacado Central","tipo":"Atacado","km":[7.8,9.5,3.2,2.9],"p":[5.1,7.2,9.2,4.4,null,6.9,4.1,4.9,11.9,13.8,5.9,18.9,3.9,4.5]},
+  {"id":"emporio","nome":"Empório do Bairro","tipo":"Empório","km":[0.6,1.7,5.6,0.7],"p":[7.5,9.9,13.9,6.3,6.9,9.5,6.2,6.9,17.9,18.5,8.6,27.9,6.2,6.8]}
+ ],
+ "cons": {"arroz":0.5,"feijao":0.35,"ovos":0.5,"leite":2,"banana":1,"tomate":0.5,"cebola":0.2,"batata":0.5,"frango":1,"pao":0.5,"oleo":0.1,"cafe":0.2,"macarrao":0.5,"cenoura":0.3},
+ "conserva": {
+  "arroz":[180,"Armário","Pote bem fechado, longe da umidade."],
+  "feijao":[180,"Armário","Pote fechado, em local seco e fresco."],
+  "ovos":[21,"Geladeira","Na prateleira, não na porta."],
+  "leite":[5,"Geladeira","Vale para leite pasteurizado. Longa vida: siga a validade da embalagem."],
+  "banana":[5,"Fruteira","Separe das outras frutas, amadurece rápido."],
+  "tomate":[7,"Fruteira","Depois de maduro, vai para a geladeira."],
+  "cebola":[30,"Local seco e arejado","Não guarde junto das batatas."],
+  "batata":[21,"Local escuro e arejado","Longe da luz, para não brotar."],
+  "frango":[2,"Geladeira","Cru, até 2 dias. Congele o que não for usar."],
+  "pao":[2,"Temperatura ambiente","Congele em fatias para durar mais."],
+  "oleo":[180,"Armário","Longe do fogão e da luz."],
+  "cafe":[30,"Armário","Depois de aberto, guarde em pote fechado."],
+  "macarrao":[365,"Armário","Em local seco."],
+  "cenoura":[14,"Geladeira","Em saco ventilado, na gaveta de legumes."]
+ },
+ "receitas": [
+  {"n":"Arroz, feijão e ovo mexido","i":["arroz","feijao","ovos","cebola","oleo"]},
+  {"n":"Frango com batata e cenoura","i":["frango","batata","cenoura","cebola"]},
+  {"n":"Macarrão ao molho de tomate","i":["macarrao","tomate","cebola","oleo"]},
+  {"n":"Omelete de tomate","i":["ovos","tomate","cebola"]},
+  {"n":"Sopa de legumes","i":["batata","cenoura","cebola"]},
+  {"n":"Vitamina de banana","i":["banana","leite"]},
+  {"n":"Arroz de forno com frango","i":["arroz","frango","cebola","tomate"]},
+  {"n":"Pão com ovo e café com leite","i":["pao","ovos","cafe","leite"]},
+  {"n":"Bolinho de batata e cenoura","i":["batata","cenoura","ovos"]}
+ ],
+ "subs": {"frango":"ovos","tomate":"cenoura","batata":"macarrao"}
+}
+).then(d => {
+  const ks = Object.keys(d.itens);
+  d.mercados.forEach(m => m.precos = Object.fromEntries(ks.map((k, i) => [k, m.p[i]])));
+  D = d;
+  $('#catalogo').innerHTML = ks.map(k => `<option value="${d.itens[k]}">`).join('');
+  $('#desp-item').innerHTML = ks.map(k => `<option value="${k}">${d.itens[k]}</option>`).join('');
+  $('#bairro').innerHTML = d.bairros.map((b, i) => `<option value="${i}">${b}</option>`).join('');
+  const p = S.perfil;
+  $('#pessoas').value = p.pessoas; $('#orc').value = p.orc; $('#bairro').value = p.bairro;
+  $(`input[name=modo][value=${p.modo}]`).checked = true;
+  route();
+}).catch(() => { $('#erro-perfil').textContent = 'Não foi possível carregar os dados. Abra o site pelo link publicado ou por um servidor local.'; });
+
+/* ---------- Navegação ---------- */
+const TELAS = ['inicio', 'lista', 'resultados', 'detalhe', 'assistente', 'despensa'];
+function show(id) {
+  if (id === 'detalhe' && !atual) id = 'resultados';
+  $$('[data-screen]').forEach(s => s.hidden = s.id !== id);
+  const sec = document.getElementById(id), h = $('h1', sec);
+  $$('nav [data-go]').forEach(b => b.dataset.go === (id === 'detalhe' ? 'resultados' : id) ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
+  if (D) ({ lista: renderLista, resultados: renderRanking, assistente: renderAssistente, despensa: renderDespensa }[id] || (() => {}))();
+  document.title = h.textContent + ' — Cesta Certa';
+  h.focus(); window.scrollTo(0, 0);
+}
+const go = id => location.hash === '#' + id ? show(id) : (location.hash = id);
+const route = () => { const id = location.hash.slice(1); show(TELAS.includes(id) ? id : 'inicio'); };
+addEventListener('hashchange', route);
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+
+/* ---------- Início: perfil ---------- */
+$('#form-perfil').addEventListener('submit', e => {
+  e.preventDefault();
+  const pe = +$('#pessoas').value, orc = +$('#orc').value;
+  const okPe = Number.isInteger(pe) && pe >= 1 && pe <= 12, okOrc = orc > 0;
+  $('#pessoas').setAttribute('aria-invalid', !okPe); $('#orc').setAttribute('aria-invalid', !okOrc);
+  const err = !okPe ? 'Informe quantas pessoas comem na sua casa, de 1 a 12.' : !okOrc ? 'Informe o orçamento semanal para comida, em reais.' : '';
+  $('#erro-perfil').textContent = err; if (err) return;
+  S.perfil = { pessoas: pe, bairro: +$('#bairro').value, modo: $('input[name=modo]:checked').value, orc }; salvar(); go('lista');
+});
+$('#exemplo').addEventListener('click', () => {
+  if (!D) return;
+  S.lista = [['arroz', 1], ['feijao', 1], ['ovos', 1], ['tomate', 1], ['cebola', 1], ['batata', 2], ['frango', 1], ['cenoura', 1]].map(([k, q]) => ({ k, q, tenho: false }));
+  const ha = n => { const x = new Date(); x.setDate(x.getDate() - n); return isoLocal(x); };
+  S.despensa = [{ k: 'banana', data: ha(4) }, { k: 'leite', data: ha(3) }, { k: 'tomate', data: ha(5) }];
+  salvar(); anuncia('Exemplo carregado: 8 itens na lista e 3 na despensa.'); go('lista');
+});
+
+/* ---------- Lista ---------- */
+const erroItem = t => { $('#erro-item').textContent = t; $('#item').setAttribute('aria-invalid', t ? 'true' : 'false'); };
+$('#form-lista').addEventListener('submit', e => {
+  e.preventDefault(); if (!D) return;
+  const v = $('#item').value, q = +$('#qtd').value;
+  if (!v.trim()) return erroItem('Digite o nome de um item, por exemplo: arroz.');
+  const k = Object.keys(D.itens).find(k => norm(nome(k)) === norm(v) || norm(nome(k)).startsWith(norm(v) + ' '));
+  if (!k) return erroItem(`Ainda não temos preço de "${v.trim()}". Escolha um item das sugestões.`);
+  if (S.lista.some(i => i.k === k)) return erroItem('Esse item já está na lista. Ajuste a quantidade abaixo.');
+  if (!(Number.isInteger(q) && q >= 1 && q <= 20)) return erroItem('A quantidade deve ser um número inteiro de 1 a 20.');
+  S.lista.push({ k, q, tenho: false }); salvar(); $('#item').value = ''; $('#qtd').value = 1; erroItem('');
+  renderLista(); anuncia(`${curto(k)} adicionado. A lista tem ${S.lista.length} ${plural(S.lista.length, 'item', 'itens')}.`); $('#item').focus();
+});
+function renderEstimativa() {
+  const tot = S.lista.filter(i => !i.tenho).reduce((a, i) => a + mediaPreco(i.k, D) * i.q, 0), orc = S.perfil.orc;
+  $('#estimativa').innerHTML = S.lista.length ? `Estimativa pelos preços médios: <strong>${R$(tot)}</strong> de um orçamento semanal de ${R$(orc)} (${Math.round(tot / orc * 100)}%). ${tot > orc ? '<span class="urg">Acima do orçamento. Veja os ajustes na tela Cardápio.</span>' : 'Dentro do orçamento.'}` : '';
+}
+function renderLista() {
+  const p = S.perfil;
+  $('#contexto').textContent = `Comprando ${MODOS[p.modo].nome}, a partir de ${D.bairros[p.bairro]}, para ${p.pessoas} ${plural(p.pessoas, 'pessoa', 'pessoas')}.`;
+  $('#itens').innerHTML = S.lista.map(({ k, q, tenho }) => `<li><span class="ico" aria-hidden="true">${svg(k)}</span><span class="nm">${nome(k)}</span>
+    <div class="qty" role="group" aria-label="Quantidade de ${curto(k)}"><button type="button" data-menos="${k}" aria-label="Diminuir ${curto(k)}">−</button><input type="number" min="1" max="20" value="${q}" data-q="${k}" aria-label="Quantidade de ${curto(k)}"><button type="button" data-mais="${k}" aria-label="Aumentar ${curto(k)}">+</button></div>
+    <label class="chip-check"><input type="checkbox" data-tenho="${k}" aria-label="Já tenho ${curto(k)} em casa" ${tenho ? 'checked' : ''}> Já tenho em casa</label>
+    <button type="button" class="rm" data-rm="${k}" aria-label="Remover ${curto(k)}">Remover</button></li>`).join('');
+  $('#vazio').hidden = S.lista.length > 0; renderEstimativa();
+}
+$('#itens').addEventListener('change', e => {
+  const t = e.target, it = S.lista.find(i => i.k === (t.dataset.q || t.dataset.tenho)); if (!it) return;
+  if (t.dataset.q) { const q = +t.value; if (Number.isInteger(q) && q >= 1 && q <= 20) it.q = q; else { t.value = it.q; anuncia('Quantidade inválida. Use um número de 1 a 20.'); } }
+  else it.tenho = t.checked;
+  salvar(); renderEstimativa();
+});
+function setQ(k, q) { const it = S.lista.find(i => i.k === k); if (!it || !(Number.isInteger(q) && q >= 1 && q <= 20)) return false; it.q = q; salvar(); renderEstimativa(); return true; }
+$('#itens').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.mais || d.menos) {
+    const k = d.mais || d.menos, inp = $(`[data-q="${k}"]`), q = +inp.value + (d.mais ? 1 : -1);
+    if (setQ(k, q)) inp.value = q; else anuncia(d.mais ? 'O máximo é 20 unidades.' : 'A quantidade mínima é 1. Use Remover para tirar o item.');
+    return;
+  }
+  if (!d.rm) return;
+  S.lista = S.lista.filter(i => i.k !== d.rm); salvar(); renderLista(); anuncia(`${curto(d.rm)} removido.`); $('#item').focus();
+});
+$('#comparar').addEventListener('click', () => {
+  const ativos = S.lista.filter(i => !i.tenho);
+  if (!ativos.length) { $('#erro-lista').textContent = S.lista.length ? 'Todos os itens estão marcados como "já tenho". Desmarque o que precisa comprar.' : 'Adicione ao menos um item antes de comparar.'; return; }
+  $('#erro-lista').textContent = ''; resultado = calcular(ativos, S.perfil.bairro, S.perfil.modo, D); atual = null; go('resultados');
+});
+
+/* ---------- Mercados ---------- */
+function renderRanking() {
+  const el = $('#ranking');
+  if (!resultado.length) { $('#resumo').textContent = 'Você ainda não comparou mercados. Monte sua lista primeiro.'; el.innerHTML = ''; return; }
+  const prio = $('input[name=prio]:checked').value, so = $('#so-completos').checked;
+  const ord = { preco: (a, b) => a.total - b.total, tempo: (a, b) => a.min - b.min || a.total - b.total, disp: (a, b) => a.falta.length - b.falta.length || a.total - b.total, equilibrio: (a, b) => a.efetivo - b.efetivo }[prio];
+  const vis = resultado.filter(m => !so || !m.falta.length).sort(ord), n = resultado[0].linhas.length;
+  if (!vis.length) { el.innerHTML = ''; $('#resumo').textContent = 'Nenhum mercado tem todos os itens. Desmarque o filtro para ver as opções.'; return; }
+  const max = Math.max(...vis.map(m => m.total));
+  $('#resumo').textContent = `${vis.length} ${plural(vis.length, 'mercado comparado', 'mercados comparados')} para ${n} ${plural(n, 'item', 'itens')}, indo ${vis[0].modo}. Melhor opção: ${vis[0].nome}, ${R$(vis[0].total)} no total.`;
+  el.innerHTML = vis.map((m, i) => `<li><span class="pos" aria-hidden="true">${i + 1}</span>
+    <h2>${m.nome}${i === 0 ? '<span class="sel">Melhor escolha</span>' : ''}</h2>
+    <p class="meta">${m.tipo}, ${km1(m.km)} km, ${m.min} min de ida e volta. Tem ${n - m.falta.length} de ${n} itens (${Math.round((n - m.falta.length) / n * 100)}%).</p>
+    <p class="total">${R$(m.total)} <span class="meta">com o deslocamento</span></p>
+    <span class="bar" aria-hidden="true"><i style="width:${Math.round(m.total / max * 100)}%"></i></span>
+    <button class="btn" type="button" data-ver="${m.id}" aria-label="Ver detalhes de ${m.nome}">Ver detalhes</button></li>`).join('');
+}
+$$('input[name=prio], #so-completos').forEach(i => i.addEventListener('change', () => { renderRanking(); anuncia($('#resumo').textContent); }));
+$('#ranking').addEventListener('click', e => {
+  const id = e.target.dataset.ver; if (!id) return;
+  atual = resultado.find(m => m.id === id); renderDetalhe(); go('detalhe');
+});
+
+/* ---------- Detalhe do mercado ---------- */
+function renderDetalhe() {
+  const m = atual;
+  $('#t-det').textContent = m.nome; $('#det-sub').textContent = `${m.tipo}, a ${km1(m.km)} km de você.`;
+  $('#det-totais').innerHTML = [['Itens', R$(m.cesta + m.extra)], ['Ida e volta', `${R$(m.desloc)}, ${m.min} min`], ['Total estimado', R$(m.total)]].map(([t, v]) => `<div><dt>${t}</dt><dd>${v}</dd></div>`).join('');
+  $('#det-itens').innerHTML = m.linhas.map(l => l.p
+    ? `<tr><th scope="row"><span aria-hidden="true">${svg(l.k, 'sm')}</span> ${nome(l.k)}</th><td>${l.q}</td><td>${R$(l.p)}</td><td>${R$(l.p * l.q)}</td></tr>`
+    : `<tr><th scope="row"><span aria-hidden="true">${svg(l.k, 'sm')}</span> ${nome(l.k)}</th><td>${l.q}</td><td class="falta">Não tem aqui</td><td class="falta">${R$(l.est * l.q)} (estimado em outro mercado)</td></tr>`).join('');
+  $('#confirma').textContent = ''; $('#registrar').hidden = true; $('#ver-despensa').hidden = true;
+}
+$('#escolher').addEventListener('click', () => {
+  const m = atual, n = m.linhas.length;
+  $('#confirma').textContent = `Combinado! Sua ida ao ${m.nome} está salva: ${n - m.falta.length} de ${n} itens, cerca de ${m.min} minutos de ida e volta e ${R$(m.total)} no total.`;
+  $('#registrar').hidden = false;
+});
+$('#registrar').addEventListener('click', () => {
+  const ks = atual.linhas.map(l => l.k);
+  S.despensa = S.despensa.filter(d => !ks.includes(d.k)).concat(ks.map(k => ({ k, data: hoje() })));
+  S.lista.forEach(i => { if (ks.includes(i.k)) i.tenho = true; });
+  salvar(); $('#confirma').textContent = `Compra registrada: ${ks.length} ${plural(ks.length, 'item está', 'itens estão')} na sua despensa, com a data de hoje.`;
+  $('#registrar').hidden = true; $('#ver-despensa').hidden = false;
+});
+
+/* ---------- Cardápio ---------- */
+const comRestante = () => S.despensa.map(d => ({ ...d, rest: D.conserva[d.k][0] - dias(d.data) }));
+function renderAssistente() {
+  const disp = new Set([...S.lista.map(i => i.k), ...S.despensa.map(d => d.k)]), pe = S.perfil.pessoas;
+  const urg = comRestante().filter(d => d.rest <= 3).map(d => d.k);
+  $('#assist-vazio').hidden = disp.size > 0;
+  if (!disp.size) { $('#cardapio').innerHTML = $('#ajustes').innerHTML = ''; return; }
+  const recs = D.receitas.map(r => { const tem = r.i.filter(k => disp.has(k)), usa = tem.filter(k => urg.includes(k)); return { ...r, tem, usa, falta: r.i.filter(k => !disp.has(k)), score: tem.length / r.i.length + 0.4 * usa.length }; })
+    .filter(r => r.tem.length >= 2).sort((a, b) => b.score - a.score).slice(0, 5);
+  const dia = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+  $('#cardapio').innerHTML = recs.length ? recs.map((r, i) => `<li><span class="ico" aria-hidden="true">${r.i.slice(0, 3).map(k => svg(k)).join('')}</span><div><h3>${dia[i]}: ${r.n}</h3>
+    <p class="meta">Você tem ${r.tem.length} de ${r.i.length} ingredientes.${r.falta.length ? ' Falta: ' + r.falta.map(curto).join(', ') + '.' : ' Não precisa comprar nada.'}</p>
+    ${r.usa.length ? `<p class="urg">Aproveita o que vence logo: ${r.usa.map(curto).join(', ')}.</p>` : ''}</div></li>`).join('') : '<li>Adicione mais itens para receber sugestões de pratos.</li>';
+  const aj = [];
+  S.lista.filter(i => !i.tenho).forEach(({ k, q }) => {
+    const rec = Math.max(1, Math.ceil(D.cons[k] * pe));
+    if (S.despensa.some(d => d.k === k)) aj.push(`<li><div><strong>${curto(k)}:</strong> você já tem na despensa. Marque "já tenho em casa" na lista para não comprar de novo.</div></li>`);
+    else if (q > rec * 1.5) aj.push(`<li><div><strong>${curto(k)}:</strong> você marcou ${q}. Para ${pe} ${plural(pe, 'pessoa', 'pessoas')}, costuma bastar ${rec} por semana.</div></li>`);
+    const s = D.subs[k], eco = s ? mediaPreco(k, D) - mediaPreco(s, D) : 0;
+    if (eco > 0.5) aj.push(`<li><div><strong>${curto(k)} caro?</strong> Troque por ${curto(s)} e economize cerca de ${R$(eco)} por unidade.</div></li>`);
+  });
+  $('#ajustes').innerHTML = aj.length ? aj.join('') : '<li><div>Sua lista está bem ajustada para a sua casa.</div></li>';
+}
+
+/* ---------- Despensa ---------- */
+function renderDespensa() {
+  const itens = comRestante().sort((a, b) => a.rest - b.rest);
+  $('#desp-vazio').hidden = itens.length > 0;
+  $('#desp-lista').innerHTML = itens.map(d => {
+    const c = D.conserva[d.k], r = d.rest;
+    const st = r < 0 ? ['urg', 'Passou do prazo estimado. Confira o alimento antes de consumir.'] : r === 0 ? ['urg', 'Consuma hoje.'] : r <= 2 ? ['urg', `Consumir primeiro: ${plural(r, 'resta', 'restam')} ${r} ${plural(r, 'dia', 'dias')}.`] : ['ok', `Em dia: restam ${r} dias.`];
+    return `<li><span class="ico" aria-hidden="true">${svg(d.k)}</span><div><h3>${curto(d.k)}</h3><p class="${st[0]}">${st[1]}</p><p class="meta">Guardar: ${c[1]}. ${c[2]}</p></div>
+      <button type="button" data-usei="${d.k}" aria-label="Usei ${curto(d.k)}, remover da despensa">Usei tudo</button></li>`;
+  }).join('');
+  const u = itens.filter(d => d.rest <= 3).length;
+  $('#desp-resumo').textContent = itens.length ? (u ? `${u} ${plural(u, 'item pede', 'itens pedem')} atenção. Veja receitas na tela Cardápio.` : 'Nada vence nos próximos dias.') : '';
+}
+$('#form-desp').addEventListener('submit', e => {
+  e.preventDefault(); if (!D) return;
+  const k = $('#desp-item').value; S.despensa.push({ k, data: hoje() }); salvar(); renderDespensa(); anuncia(`${curto(k)} adicionado à despensa.`);
+});
+$('#desp-lista').addEventListener('click', e => {
+  const k = e.target.dataset.usei; if (!k) return;
+  S.despensa.splice(S.despensa.findIndex(d => d.k === k), 1); salvar(); renderDespensa(); anuncia(`${curto(k)} removido da despensa.`); $('#desp-item').focus();
+});
+
+/* ---------- Acessibilidade ---------- */
+const ac = $('#acess');
+const setAc = on => { document.documentElement.classList.toggle('acess', on); ac.setAttribute('aria-pressed', on); try { localStorage.setItem('cestacerta-acess', on ? '1' : '0'); } catch {} };
+try { if (localStorage.getItem('cestacerta-acess') === '1') setAc(true); } catch {}
+ac.addEventListener('click', () => setAc(ac.getAttribute('aria-pressed') !== 'true'));
+
+</script>
+</body>
+</html>
