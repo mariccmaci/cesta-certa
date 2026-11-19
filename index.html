@@ -486,10 +486,16 @@ $('#escolher').addEventListener('click', () => {
   $('#registrar').hidden = false;
 });
 $('#registrar').addEventListener('click', () => {
-  const ks = atual.linhas.map(l => l.k);
+  // Só entram na despensa os itens disponíveis no mercado selecionado.
+  const ks = atual.linhas.filter(l => l.p).map(l => l.k);
+  if (!ks.length) {
+    $('#confirma').textContent = 'Não há itens disponíveis neste mercado para registrar na despensa.';
+    $('#registrar').hidden = true; return;
+  }
   S.despensa = S.despensa.filter(d => !ks.includes(d.k)).concat(ks.map(k => ({ k, data: hoje() })));
   S.lista.forEach(i => { if (ks.includes(i.k)) i.tenho = true; });
-  salvar(); $('#confirma').textContent = `Compra registrada: ${ks.length} ${plural(ks.length, 'item está', 'itens estão')} na sua despensa, com a data de hoje.`;
+  salvar(); renderDespensa();
+  $('#confirma').textContent = `Compra registrada: ${ks.length} ${plural(ks.length, 'item disponível foi adicionado', 'itens disponíveis foram adicionados')} à sua despensa, com a data de hoje.`;
   $('#registrar').hidden = true; $('#ver-despensa').hidden = false;
 });
 
