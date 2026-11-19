@@ -81,6 +81,4 @@ A identidade visual busca aproximar a interface do universo das feiras livres e 
 RM: 570455  
 FIAP — Global Solution | CitizenTech
 
-## Licença
 
-Projeto desenvolvido para fins acadêmicos. 
