@@ -538,7 +538,11 @@ function renderDespensa() {
 }
 $('#form-desp').addEventListener('submit', e => {
   e.preventDefault(); if (!D) return;
-  const k = $('#desp-item').value; S.despensa.push({ k, data: hoje() }); salvar(); renderDespensa(); anuncia(`${curto(k)} adicionado à despensa.`);
+  const k = $('#desp-item').value;
+  // Como o protótipo não controla quantidades, mantém um único registro por alimento.
+  S.despensa = S.despensa.filter(d => d.k !== k);
+  S.despensa.push({ k, data: hoje() });
+  salvar(); renderDespensa(); anuncia(`${curto(k)} adicionado à despensa.`);
 });
 $('#desp-lista').addEventListener('click', e => {
   const k = e.target.dataset.usei; if (!k) return;
